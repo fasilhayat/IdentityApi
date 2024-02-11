@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityApi", "IdentityApi\IdentityApi.csproj", "{53195FA0-5582-4A30-8B94-ADC3FEFCD7BC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{6F28F565-219E-4DDC-B9E5-AA6846721EE8}"
+	ProjectSection(SolutionItems) = preProject
+		create-certificate.ps1 = create-certificate.ps1
+		Install.ps1 = Install.ps1
+		Uninstall.ps1 = Uninstall.ps1
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{53195FA0-5582-4A30-8B94-ADC3FEFCD7BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53195FA0-5582-4A30-8B94-ADC3FEFCD7BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53195FA0-5582-4A30-8B94-ADC3FEFCD7BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53195FA0-5582-4A30-8B94-ADC3FEFCD7BC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {02272DC4-FD06-47D2-B36B-065BA6F6F7A3}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,21 @@
+version: '2'
+networks:
+  default:
+    ipam:
+      driver: default
+services:
+  identity-app:
+    image: identity-image:latest
+    restart: always
+    ports:
+      - '7113:8080'
+    networks:
+      - default
+    volumes:
+      - identity-app:/app/var/data/
+      - type: bind
+        source: /app/var/data/
+        target: /var/data/
+volumes:
+  identity-app: 
+    driver: local
