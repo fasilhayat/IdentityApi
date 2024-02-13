@@ -13,9 +13,9 @@ services:
       - default
     volumes:
       - identity-app:/app/var/data/
-      - type: bind
-        source: /app/var/data/
-        target: /var/data/
+      # - type: bind
+      #   source: /app/var/data/
+      #   target: /var/data/
 volumes:
   identity-app: 
     driver: local

@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using System.Text.Json;
 using IdentityApi.Model;
 
@@ -6,8 +5,8 @@ const string filePath = @"var/data/medlemmer.json";
 var json = JsonDocument.Parse(File.ReadAllText(filePath));
 var deserialized = json.Deserialize<IEnumerable<Medlem>>();
 
-var identityStore = new ConcurrentDictionary<uint, string>();
-var cprStore = new ConcurrentDictionary<string, uint>();
+var identityStore = new Dictionary<uint, string>();
+var cprStore = new Dictionary<string, uint>();
 
 if (deserialized != null)
     foreach (var medlem in deserialized)
@@ -29,8 +28,8 @@ IResult GetCpr(uint id)
     return Results.Content(cpr, contentType: "text/plain", statusCode: string.IsNullOrEmpty(cpr) ? 404 : 200);
 }
 
-IResult GetIdentitetsnoegle(string cprnummer)
+IResult GetIdentitetsnoegle(string cpr)
 {
-    cprStore.TryGetValue(cprnummer, out var identitetsnoegle);
-    return Results.Content(identitetsnoegle.ToString(), contentType: "text/plain", statusCode: identitetsnoegle == 0 ? 404 : 200);
+    cprStore.TryGetValue(cpr, out var identitetsnoegle);
+    return Results.Content(identitetsnoegle == 0 ? string.Empty : identitetsnoegle.ToString(), contentType: "text/plain", statusCode: identitetsnoegle == 0 ? 404 : 200);
 }
