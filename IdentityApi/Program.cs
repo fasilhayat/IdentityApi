@@ -3,15 +3,15 @@ using System.Text.Json;
 using IdentityApi.Model;
 
 var json = JsonDocument.Parse(File.ReadAllText(@"var/data/medlemmer.json"));
-var medlemmer = json.Deserialize<IList<Medlem>>();
+var forretningsnoegler = json.Deserialize<IList<Noeglering>>();
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
-if (medlemmer is { Count: > 0 })
+if (forretningsnoegler is { Count: > 0 })
 {
-    var identityStore = medlemmer.ToFrozenDictionary(x => x.Identitetsnoegle, x=> x.Cprnummer!);
-    var cprStore = medlemmer.ToFrozenDictionary(x => x.Cprnummer!, x => x.Identitetsnoegle);
+    var identityStore = forretningsnoegler.ToFrozenDictionary(x => x.Identitetsnoegle, x=> x.Cprnummer!);
+    var cprStore = forretningsnoegler.ToFrozenDictionary(x => x.Cprnummer!, x => x.Identitetsnoegle);
     app.MapGet("/id/{id}", (uint id) => GetCpr(id, identityStore));
     app.MapGet("/cpr/{cpr}", (string cpr) => GetIdentitetsnoegle(cpr, cprStore));
 }
