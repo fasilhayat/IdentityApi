@@ -4,15 +4,15 @@ using IdentityApi.Model;
 
 const string filePath = @"var/data/medlemmer.json";
 var json = JsonDocument.Parse(File.ReadAllText(filePath));
-var deserialized = json.Deserialize<IList<Medlem>>();
+var medlemmer = json.Deserialize<IList<Medlem>>();
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
-if (deserialized is { Count: > 0 })
+if (medlemmer is { Count: > 0 })
 {
-    var identityStore = deserialized.Select(x => new KeyValuePair<uint,string>(x.Identitetsnoegle, x.Cprnummer!)).ToFrozenDictionary();
-    var cprStore = deserialized.Select(x => new KeyValuePair<string, uint>(x.Cprnummer!, x.Identitetsnoegle)).ToFrozenDictionary();
+    var identityStore = medlemmer.ToFrozenDictionary(x => x.Identitetsnoegle, x=> x.Cprnummer!);
+    var cprStore = medlemmer.ToFrozenDictionary(x => x.Cprnummer!, x => x.Identitetsnoegle);
 
     app.MapGet("/id/{id}", (uint id) => GetCpr(id, identityStore));
     app.MapGet("/cpr/{cpr}", (string cpr) => GetIdentitetsnoegle(cpr, cprStore));
