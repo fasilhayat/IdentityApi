@@ -4,13 +4,10 @@ using System.Text;
 using System.Text.Json;
 
 const string dataSourceFolder = @"var/data";
-const string dataSourceFile = "medlemmer.json";
-const string dataSourceFilePath = @$"{dataSourceFolder}/{dataSourceFile}";
+const string dataSourceFilePath = @$"{dataSourceFolder}/medlemmer.json";
 
 FrozenDictionary<string, string> identityStore;
 FrozenDictionary<string, string> cprStore;
-IEnumerable<Noeglering>? forretningsnoegler;
-FileSystemWatcher watcher;
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
@@ -24,7 +21,7 @@ app.Run();
 
 void WatchDataSourceFolder()
 {
-    watcher = new FileSystemWatcher();
+    var watcher = new FileSystemWatcher();
     watcher.Path = dataSourceFolder;
     watcher.NotifyFilter = NotifyFilters.LastWrite;
     watcher.Filter = "*.json";
@@ -36,7 +33,7 @@ void LoadSource()
 {
     Console.WriteLine("Reading json datafile");
     var json = JsonDocument.Parse(File.ReadAllText(dataSourceFilePath, Encoding.UTF8));
-    forretningsnoegler = json.Deserialize<IList<Noeglering>>();
+    var forretningsnoegler = json.Deserialize<IList<Noeglering>>();
     identityStore = forretningsnoegler!.ToFrozenDictionary(x => x.Identitetsnoegle!, x => x.Cprnummer!);
     cprStore = forretningsnoegler!.ToFrozenDictionary(x => x.Cprnummer!, x => x.Identitetsnoegle!);
     Console.WriteLine($"identitystore size: {identityStore.Count} | cprstore size: {cprStore.Count}");
@@ -44,7 +41,7 @@ void LoadSource()
 
 void OnChanged(object source, FileSystemEventArgs e)
 {
-    Thread.Sleep(100); // Release lock
+    Thread.Sleep(100); // Wait for release lock on file
     LoadSource();
 }
 
