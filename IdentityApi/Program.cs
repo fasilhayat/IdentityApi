@@ -5,11 +5,11 @@ using System.Text.Json;
 
 const string dataSourceFolder = @"var/data";
 const string dataSourceFile = "medlemmer.json";
-const string dataSourceFilePath = $"{dataSourceFolder}/{dataSourceFile}";
+const string dataSourceFilePath = @$"{dataSourceFolder}/{dataSourceFile}";
 
 FrozenDictionary<string, string> identityStore;
 FrozenDictionary<string, string> cprStore;
-IList<Noeglering>? forretningsnoegler;
+IEnumerable<Noeglering>? forretningsnoegler;
 FileSystemWatcher watcher;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,8 +18,8 @@ var app = builder.Build();
 WatchDataSourceFolder();
 LoadSource();
 
-app.MapGet("/id/{id}", GetCpr);
-app.MapGet("/cpr/{cpr}", GetIdentitetsnoegle);
+app.MapGet("/id/{id}",(string id) => GetValue(id, identityStore));
+app.MapGet("/cpr/{cpr}", (string cpr) => GetValue(cpr, cprStore));
 app.Run();
 
 void WatchDataSourceFolder()
@@ -48,14 +48,8 @@ void OnChanged(object source, FileSystemEventArgs e)
     LoadSource();
 }
 
-IResult GetCpr(string id)
+IResult GetValue(string key, IReadOnlyDictionary<string, string> storage)
 {
-    identityStore.TryGetValue(id, out var cpr);
-    return Results.Content(cpr, contentType: "text/plain", statusCode: string.IsNullOrEmpty(cpr) ? 404 : 200);
-}
-
-IResult GetIdentitetsnoegle(string cpr)
-{
-    cprStore.TryGetValue(cpr, out var identitetsnoegle);
-    return Results.Content(identitetsnoegle, contentType: "text/plain", statusCode: string.IsNullOrEmpty(identitetsnoegle) ? 404 : 200);
+    storage.TryGetValue(key, out var value);
+    return Results.Content(value, contentType: "text/plain", statusCode: string.IsNullOrEmpty(value) ? 404 : 200);
 }
