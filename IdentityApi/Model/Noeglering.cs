@@ -12,7 +12,7 @@ public class Noeglering
     /// </summary>
     /// <param name="identitetsnoegle"></param>
     /// <param name="cprnummer"></param>
-    public Noeglering(uint identitetsnoegle, string? cprnummer)
+    public Noeglering(string? identitetsnoegle, string? cprnummer)
     {
         Identitetsnoegle = identitetsnoegle;
         Cprnummer = cprnummer;
@@ -22,7 +22,7 @@ public class Noeglering
     /// 
     /// </summary>
     [JsonPropertyName("identitetsnoegle")]
-    public uint Identitetsnoegle { get; init; }
+    public string? Identitetsnoegle { get; init; }
 
     /// <summary>
     /// 
