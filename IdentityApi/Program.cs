@@ -10,19 +10,19 @@ const string dataSourceFilePath = @$"{dataSourceFolder}/medlemmer.json";
 FrozenDictionary<string, string> identityStore;
 FrozenDictionary<string, string> cprStore;
 ObjectCache? cache = MemoryCache.Default;
+TimeSpan slidingExpïryTime = new(0, 0, 25);
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
 LoadSource();
-
-app.MapGet("/id/{id}",(string id) => GetValue("identitystore",id));
-app.MapGet("/cpr/{cpr}", (string cpr) => GetValue("cprstore",cpr));
+app.MapGet("/id/{id}",(string id) => GetValue("identity",id));
+app.MapGet("/cpr/{cpr}", (string cpr) => GetValue("cpr",cpr));
 app.Run();
 
-void AddToCache(string storageName, FrozenDictionary<string, string> inMemoryStorage)
+void AddToCache(string cacheKey, FrozenDictionary<string, string> inMemoryStorage)
 {
-    cache.Add(storageName, inMemoryStorage, new CacheItemPolicy { SlidingExpiration = new TimeSpan(0, 0, 60), RemovedCallback = CacheRemovedCallback});
+    cache.Add(cacheKey, inMemoryStorage, new CacheItemPolicy { SlidingExpiration = slidingExpïryTime, RemovedCallback = CacheRemovedCallback});
 }
 
 void LoadSource()
@@ -32,22 +32,22 @@ void LoadSource()
     var forretningsnoegler = json.Deserialize<IList<Noeglering>>();
 
     identityStore = forretningsnoegler!.ToFrozenDictionary(x => x.Identitetsnoegle!, x => x.Cprnummer!);
-    AddToCache("identitystore", identityStore);
+    AddToCache("identity", identityStore);
 
     cprStore = forretningsnoegler!.ToFrozenDictionary(x => x.Cprnummer!, x => x.Identitetsnoegle!);
-    AddToCache("cprstore", cprStore);
-    Console.WriteLine($"identitystore size: {identityStore.Count} | cprstore size: {cprStore.Count}");
+    AddToCache("cpr", cprStore);
+    Console.WriteLine($"identity key count: {identityStore.Count} | cpr key count: {cprStore.Count}");
 }
 
-IResult GetValue(string cacheItemKey, string key)
+IResult GetValue(string cacheKey, string key)
 {
-    var cachedItem = (IReadOnlyDictionary<string, string>) cache.GetCacheItem(cacheItemKey)!.Value;
+    var cachedItem = (IReadOnlyDictionary<string, string>) cache.GetCacheItem(cacheKey)!.Value;
     cachedItem.TryGetValue(key, out var value);
     return Results.Content(value, contentType: "text/plain", statusCode: string.IsNullOrEmpty(value) ? 404 : 200);
 }
 
 void CacheRemovedCallback(CacheEntryRemovedArguments arguments)
 {
-    Console.WriteLine($"Cached empty: {arguments.RemovedReason} | Item {arguments.CacheItem.Key} removed - reloading data");
+    Console.WriteLine($"Cache empty: {arguments.RemovedReason} | cache: '{arguments.CacheItem.Key}' removed - reloading data");
     LoadSource();
 }
