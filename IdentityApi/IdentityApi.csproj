@@ -8,4 +8,8 @@
     <DockerfileFile>Docker\Dockerfile</DockerfileFile>
     <UserSecretsId>55d0d63a-1b30-4ba7-9ecc-c072a9c12bfe</UserSecretsId>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Runtime.Caching" Version="8.0.0" />
+  </ItemGroup>
 </Project>
