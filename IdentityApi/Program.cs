@@ -6,6 +6,7 @@ using System.Text.Json;
 const string dataSourceFolder = @"var/data";
 const string dataSourceFilePath = @$"{dataSourceFolder}/medlemmer.json";
 
+FileSystemWatcher watcher;
 FrozenDictionary<string, string> identityStore;
 FrozenDictionary<string, string> cprStore;
 
@@ -21,7 +22,7 @@ app.Run();
 
 void WatchDataSourceFolder()
 {
-    var watcher = new FileSystemWatcher();
+    watcher = new FileSystemWatcher();
     watcher.Path = dataSourceFolder;
     watcher.NotifyFilter = NotifyFilters.LastWrite;
     watcher.Filter = "*.json";
