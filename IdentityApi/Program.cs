@@ -24,7 +24,7 @@ static void LoadDataSource()
     var cprStore = forretningsnoegler!.ToImmutableDictionary(x => x.Cprnummer!, x => x.Identitetsnoegle!);
     var cachePunkt = new CachePunkt(cprStore, identityStore);
 
-    MemoryCache.Default.Set("IdentityCache", cachePunkt, new CacheItemPolicy { SlidingExpiration = new TimeSpan(0, 0, 2, 0), RemovedCallback = CacheRemovedCallback });
+    MemoryCache.Default.Set("IdentityCache", cachePunkt, new CacheItemPolicy { SlidingExpiration = new TimeSpan(0, 0, 10, 0), RemovedCallback = CacheRemovedCallback });
 }
 
 static void CacheRemovedCallback(CacheEntryRemovedArguments arguments)
